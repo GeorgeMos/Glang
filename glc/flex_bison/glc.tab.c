@@ -110,9 +110,10 @@ enum yysymbol_kind_t
   YYSYMBOL_YYEOF = 0,                      /* "end of file"  */
   YYSYMBOL_YYerror = 1,                    /* error  */
   YYSYMBOL_YYUNDEF = 2,                    /* "invalid token"  */
-  YYSYMBOL_testToken = 3,                  /* testToken  */
-  YYSYMBOL_YYACCEPT = 4,                   /* $accept  */
-  YYSYMBOL_language = 5                    /* language  */
+  YYSYMBOL_STRING = 3,                     /* STRING  */
+  YYSYMBOL_testToken = 4,                  /* testToken  */
+  YYSYMBOL_YYACCEPT = 5,                   /* $accept  */
+  YYSYMBOL_language = 6                    /* language  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -443,7 +444,7 @@ union yyalloc
 #define YYLAST   1
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  4
+#define YYNTOKENS  5
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  2
 /* YYNRULES -- Number of rules.  */
@@ -452,7 +453,7 @@ union yyalloc
 #define YYNSTATES  4
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   258
+#define YYMAXUTOK   259
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -491,7 +492,7 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     1,     2,     3
+       2,     2,     2,     2,     2,     2,     1,     2,     3,     4
 };
 
 #if YYDEBUG
@@ -514,8 +515,8 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "\"end of file\"", "error", "\"invalid token\"", "testToken", "$accept",
-  "language", YY_NULLPTR
+  "\"end of file\"", "error", "\"invalid token\"", "STRING", "testToken",
+  "$accept", "language", YY_NULLPTR
 };
 
 static const char *
@@ -525,7 +526,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-4)
+#define YYPACT_NINF (-5)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -539,7 +540,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -3,    -4,     1,    -4
+      -4,    -5,     1,    -5
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -553,7 +554,7 @@ static const yytype_int8 yydefact[] =
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -4,    -4
+      -5,    -5
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -572,20 +573,20 @@ static const yytype_int8 yytable[] =
 
 static const yytype_int8 yycheck[] =
 {
-       3,     0
+       4,     0
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     5,     0
+       0,     4,     6,     0
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,     4,     5,     5
+       0,     5,     6,     6
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
@@ -1325,7 +1326,7 @@ yyreduce:
   switch (yyn)
     {
 
-#line 1329 "glc.tab.c"
+#line 1330 "glc.tab.c"
 
       default: break;
     }
@@ -1554,7 +1555,8 @@ yyreturnlab:
 
 void yyerror(const char *s)
 {
-  fprintf(stderr,"error: %s on line %d\n\n\n", s, yylineno);
+  fprintf(stderr,"error: %s on line %d\n", s, yylineno);
+  exit(EXIT_FAILURE);
 }
 
 int main(int argc, char *argv[])

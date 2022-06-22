@@ -17,7 +17,7 @@ extern FILE* yyin;
 }
 
 %error-verbose //Gives a verbose error output
-
+%token <string> STRING;
 %token testToken;
 
 %start language
@@ -32,7 +32,8 @@ language: | testToken;
 
 void yyerror(const char *s)
 {
-  fprintf(stderr,"error: %s on line %d\n\n\n", s, yylineno);
+  fprintf(stderr,"error: %s on line %d\n", s, yylineno);
+  exit(EXIT_FAILURE);
 }
 
 int main(int argc, char *argv[])

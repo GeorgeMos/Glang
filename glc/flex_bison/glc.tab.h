@@ -54,7 +54,8 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    testToken = 258                /* testToken  */
+    STRING = 258,                  /* STRING  */
+    testToken = 259                /* testToken  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -69,7 +70,7 @@ union YYSTYPE
   int integer;
   double decimal;
 
-#line 73 "glc.tab.h"
+#line 74 "glc.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

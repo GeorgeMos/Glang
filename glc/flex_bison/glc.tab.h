@@ -54,8 +54,29 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    STRING = 258,                  /* STRING  */
-    testToken = 259                /* testToken  */
+    COMMA = 258,                   /* COMMA  */
+    SINGLE_QUOTE = 259,            /* SINGLE_QUOTE  */
+    SEMICOLON = 260,               /* SEMICOLON  */
+    EQUALS = 261,                  /* EQUALS  */
+    DOUBLE_QUOTE = 262,            /* DOUBLE_QUOTE  */
+    RCURLY = 263,                  /* RCURLY  */
+    LCURLY = 264,                  /* LCURLY  */
+    RBRAC = 265,                   /* RBRAC  */
+    LBRAC = 266,                   /* LBRAC  */
+    RBRACE = 267,                  /* RBRACE  */
+    LBRACE = 268,                  /* LBRACE  */
+    RANGLE = 269,                  /* RANGLE  */
+    LANGLE = 270,                  /* LANGLE  */
+    CHARACTER_VALUE = 271,         /* CHARACTER_VALUE  */
+    INTEGER_VALUE = 272,           /* INTEGER_VALUE  */
+    FLOAT_VALUE = 273,             /* FLOAT_VALUE  */
+    STRING_VALUE = 274,            /* STRING_VALUE  */
+    INT = 275,                     /* INT  */
+    FLOAT = 276,                   /* FLOAT  */
+    STRING = 277,                  /* STRING  */
+    DATA_TYPE = 278,               /* DATA_TYPE  */
+    IDENTIFIER = 279,              /* IDENTIFIER  */
+    ARRAY_IDENTIFIER = 280         /* ARRAY_IDENTIFIER  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -64,13 +85,15 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 13 "glc.y"
+#line 22 "glc.y"
 
-  char *string;
-  int integer;
-  double decimal;
+  int intVal;
+  char* dataType;
+  char* strVal;
+  float floatVal;
+  char charVal;
 
-#line 74 "glc.tab.h"
+#line 97 "glc.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

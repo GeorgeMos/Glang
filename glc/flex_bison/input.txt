@@ -1,2 +1,2 @@
-testToken
-wrong
+int notmain(){12};
+int main(){10};

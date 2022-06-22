@@ -2,12 +2,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-extern int yylineno;
+
+
+extern char Data_Type[50];
+
+extern void yyerror();
+extern int yylex();
 extern char* yytext;
+extern int yylineno;
 
 int yylex();
 void yyerror(const char *s);
 extern FILE* yyin;
+
+int mainFound = 0;
+
 %}
 
 %union {
@@ -18,9 +27,10 @@ extern FILE* yyin;
   char charVal;
 }
 
-%error-verbose //Gives a verbose error output
+%define parse.lac full
+%define parse.error verbose
 
-%token  COMMA   SINGLE_QUOTES   SEMI_COLON   EQUALS 
+%token  COMMA   SINGLE_QUOTE   SEMICOLON   EQUALS DOUBLE_QUOTE 
 %token  RCURLY LCURLY RBRAC LBRAC RBRACE LBRACE RANGLE LANGLE
 
 %token <charVal>  CHARACTER_VALUE
@@ -34,19 +44,30 @@ extern FILE* yyin;
 %token <strVal> STRING
 %token <dataType> DATA_TYPE
 %token <strVal> IDENTIFIER   ARRAY_IDENTIFIER
-%token <strVal> STRUCT
+//%token <strVal> STRUCT
 
-%type <strVal> DECLARATION
-%type <strVal> EXPRESSION
-%type <strVal> FUNCTION_DECLARATION
 
-%start language
+%type <dataType> DECLARATION
+%type <dataType> EXPRESSION
+%type <dataType> FUNCTION_DECLARATION
+
+//%start LANGUAGE;
 
 %%
 
+LANGUAGE: DECLARATION | DECLARATION YYEOF;
 
 
 
+FUNCTION_DECLARATION: DATA_TYPE IDENTIFIER {if(!strcmp("main", yylval.strVal)){mainFound = 1;}} LBRACE RBRACE LCURLY NUMBER RCURLY SEMICOLON;
+
+DECLARATION: FUNCTION_DECLARATION;
+
+EXPRESSION: DATA_TYPE IDENTIFIER | 
+            DATA_TYPE IDENTIFIER EQUALS NUMBER | 
+            DATA_TYPE IDENTIFIER COMMA IDENTIFIER;
+
+NUMBER: INTEGER_VALUE;
 
 %%
 
@@ -63,8 +84,16 @@ int main(int argc, char *argv[])
   }
   int rez;
   if(!(rez = yyparse())){
-    printf("\nAll Good\n");
-    return yyparse();
+      if(!mainFound){
+          yyerror("main() not found");
+          return yyparse();
+          //exit(0);
+      }
+      else{
+          printf("\nAll Good\n");
+          return yyparse();
+          //exit(0);
+      }
   }
   else return rez;
 }

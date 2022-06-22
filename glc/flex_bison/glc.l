@@ -2,15 +2,14 @@
 #include "glc.tab.h"
 #include <string.h>
 #include <stdio.h>
-#include <stdlib>
+#include <stdlib.h>
 
-void yyerror(const char * message);
+void extern yyerror(char * message);
+void InvalidToken();
 
 %}
 
 %option noyywrap
-
-
 
 whitespace      [ \t\r\v\f]
 linefeed        \n
@@ -24,7 +23,7 @@ linefeed        \n
 "char*"     |
 "float*"    |   
 "unsigned int"  |
-"unsigned char"                                 {yylval.dataType = strdup{yytext}; return DATA_TYPE;}
+"unsigned char"                                 {yylval.dataType = strdup(yytext); return DATA_TYPE;}
 
 "'"                                             {return SINGLE_QUOTE;}
 "\""                                            {return DOUBLE_QUOTE;}
@@ -46,15 +45,14 @@ linefeed        \n
 
 [\'][a-zA-Z][\']                                {yylval.charVal = yytext[1]; return CHARACTER_VALUE;}
 [-+]?[0-9]+                                     {yylval.intVal = atoi(yytext); return INTEGER_VALUE;}
-[-+]?[0-9]*\.?[0-9]+                            {yylval.floatVal = atof(yytext); return FLOAR_VALUE;}
-[a-zA-Z][_a-zA-Z0-9]*(\[[0-9]+\])+              {yylval.strVal = strdup{yytext}; return ARRAY_IDENTIFIER;}
-[a-zA-Z][_a-zA-Z0-9]*                           {yylval.dataType = strdup{yytext}; return IDENTIFIER;}
-\"(\\.|[^"])*\"                                 {yylval.strVal = strdup{yytext}; return STRING_VALUE}
+[-+]?[0-9]*\.?[0-9]+                            {yylval.floatVal = atof(yytext); return FLOAT_VALUE;}
+[a-zA-Z][_a-zA-Z0-9]*(\[[0-9]+\])+              {yylval.strVal = strdup(yytext); return ARRAY_IDENTIFIER;}
+[a-zA-Z][_a-zA-Z0-9]*                           {yylval.strVal = strdup(yytext); return IDENTIFIER;}
+\"(\\.|[^"])*\"                                 {yylval.strVal = strdup(yytext); return STRING_VALUE;}
 
 {linefeed}                                      {yylineno++;}
 {whitespace}                                    ;
 .                                               {InvalidToken();}
-
 
 %%
 
@@ -66,7 +64,7 @@ void InvalidToken(){
     exit(0);
 }
 
-void yyerror(const char *s)
+void yyerror(char *s)
 {
   fprintf(stderr,"error: %s on line %d\n", s, yylineno);
   exit(0);

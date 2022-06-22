@@ -11,30 +11,45 @@ extern FILE* yyin;
 %}
 
 %union {
-  char *string;
-  int integer;
-  double decimal;
+  int intVal;
+  char* dataType;
+  char* strVal;
+  float floatVal;
+  char charVal;
 }
 
 %error-verbose //Gives a verbose error output
-%token <string> STRING;
-%token testToken;
+
+%token  COMMA   SINGLE_QUOTES   SEMI_COLON   EQUALS 
+%token  RCURLY LCURLY RBRAC LBRAC RBRACE LBRACE RANGLE LANGLE
+
+%token <charVal>  CHARACTER_VALUE
+%token <intVal>   INTEGER_VALUE
+%token <floatVal> FLOAT_VALUE
+%token <strVal> STRING_VALUE
+
+
+%token <intVal> INT
+%token <floatVal> FLOAT
+%token <strVal> STRING
+%token <dataType> DATA_TYPE
+%token <strVal> IDENTIFIER   ARRAY_IDENTIFIER
+%token <strVal> STRUCT
+
+%type <strVal> DECLARATION
+%type <strVal> EXPRESSION
+%type <strVal> FUNCTION_DECLARATION
 
 %start language
 
 %%
 
 
-language: | testToken;
+
 
 
 %%
 
-void yyerror(const char *s)
-{
-  fprintf(stderr,"error: %s on line %d\n", s, yylineno);
-  exit(EXIT_FAILURE);
-}
 
 int main(int argc, char *argv[])
 {

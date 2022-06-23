@@ -1,2 +1,4 @@
-int notmain(){12};
-int main(){10};
+
+int main(){};
+
+char a[a];

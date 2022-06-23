@@ -75,8 +75,7 @@ extern int yydebug;
     FLOAT = 276,                   /* FLOAT  */
     STRING = 277,                  /* STRING  */
     DATA_TYPE = 278,               /* DATA_TYPE  */
-    IDENTIFIER = 279,              /* IDENTIFIER  */
-    ARRAY_IDENTIFIER = 280         /* ARRAY_IDENTIFIER  */
+    IDENTIFIER = 279               /* IDENTIFIER  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -85,7 +84,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 22 "glc.y"
+#line 26 "glc.y"
 
   int intVal;
   char* dataType;
@@ -93,7 +92,7 @@ union YYSTYPE
   float floatVal;
   char charVal;
 
-#line 97 "glc.tab.h"
+#line 96 "glc.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

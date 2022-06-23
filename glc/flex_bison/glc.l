@@ -46,7 +46,6 @@ linefeed        \n
 [\'][a-zA-Z][\']                                {yylval.charVal = yytext[1]; return CHARACTER_VALUE;}
 [-+]?[0-9]+                                     {yylval.intVal = atoi(yytext); return INTEGER_VALUE;}
 [-+]?[0-9]*\.?[0-9]+                            {yylval.floatVal = atof(yytext); return FLOAT_VALUE;}
-[a-zA-Z][_a-zA-Z0-9]*(\[[0-9]+\])+              {yylval.strVal = strdup(yytext); return ARRAY_IDENTIFIER;}
 [a-zA-Z][_a-zA-Z0-9]*                           {yylval.strVal = strdup(yytext); return IDENTIFIER;}
 \"(\\.|[^"])*\"                                 {yylval.strVal = strdup(yytext); return STRING_VALUE;}
 

@@ -2,9 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "headers/errors.h"
 
 
 extern char Data_Type[50];
+
+//Errors
+extern void mainNotFound();
 
 extern void yyerror();
 extern int yylex();
@@ -43,7 +47,7 @@ int mainFound = 0;
 %token <floatVal> FLOAT
 %token <strVal> STRING
 %token <dataType> DATA_TYPE
-%token <strVal> IDENTIFIER   ARRAY_IDENTIFIER
+%token <strVal> IDENTIFIER
 //%token <strVal> STRUCT
 
 
@@ -55,19 +59,33 @@ int mainFound = 0;
 
 %%
 
-LANGUAGE: DECLARATION | DECLARATION YYEOF;
+LANGUAGE: DECLARATION | YYEOF;
 
 
 
-FUNCTION_DECLARATION: DATA_TYPE IDENTIFIER {if(!strcmp("main", yylval.strVal)){mainFound = 1;}} LBRACE RBRACE LCURLY NUMBER RCURLY SEMICOLON;
+FUNCTION_DECLARATION: DATA_TYPE IDENTIFIER {if(!strcmp("main", yylval.strVal)){mainFound = 1;}} /*Signal that main exists*/
+                      LBRACE RBRACE LCURLY RCURLY;
 
-DECLARATION: FUNCTION_DECLARATION;
+DECLARATION:  EXPRESSION SEMICOLON | FUNCTION_DECLARATION SEMICOLON | 
+              DECLARATION EXPRESSION SEMICOLON | DECLARATION FUNCTION_DECLARATION SEMICOLON;
 
 EXPRESSION: DATA_TYPE IDENTIFIER | 
             DATA_TYPE IDENTIFIER EQUALS NUMBER | 
-            DATA_TYPE IDENTIFIER COMMA IDENTIFIER;
+            DATA_TYPE IDENTIFIER COMMA IDENTIFIER |
+            DATA_TYPE ARRAY_IDENTIFIER | 
+            DATA_TYPE ARRAY_IDENTIFIER EQUALS LCURLY LIST RCURLY;
 
-NUMBER: INTEGER_VALUE;
+NUMBER: INTEGER_VALUE   | 
+        FLOAT_VALUE     |
+        STRING_VALUE    |
+        CHARACTER_VALUE;
+
+ARRAY_IDENTIFIER: IDENTIFIER LBRAC RBRAC |
+                  IDENTIFIER LBRAC NUMBER RBRAC |
+                  IDENTIFIER LBRAC IDENTIFIER RBRAC;
+
+LIST: IDENTIFIER | LIST COMMA IDENTIFIER;
+LIST: NUMBER | LIST COMMA NUMBER;
 
 %%
 
@@ -84,8 +102,9 @@ int main(int argc, char *argv[])
   }
   int rez;
   if(!(rez = yyparse())){
+    
       if(!mainFound){
-          yyerror("main() not found");
+          mainNotFound();
           return yyparse();
           //exit(0);
       }
@@ -94,6 +113,7 @@ int main(int argc, char *argv[])
           return yyparse();
           //exit(0);
       }
+      
   }
   else return rez;
 }

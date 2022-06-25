@@ -13,6 +13,7 @@ typedef struct{
     int integerValue;
     char *stringValue;
     float floatValue;
+    char type[10];
 }Data;
 
 
@@ -74,7 +75,6 @@ void addTreePath(charNode *startNode, char *name, int index){
   }
 }
 
-//TODO: Add a findPath function to find the index of a variable in the varArray
 
 int lookup(charNode *startNode, char *name){ //Returns the index of a variable in the variableArray
   charNode *currentNode = startNode;
@@ -97,6 +97,7 @@ int lookup(charNode *startNode, char *name){ //Returns the index of a variable i
     return currentNode->index;
   }
   else{
+    exit(0);
     return 0;
   }
 }
@@ -188,36 +189,46 @@ int mainFound = 0;
 %token <strVal> STRING
 %token <dataType> DATA_TYPE
 %token <strVal> IDENTIFIER
-//%token <strVal> STRUCT
+//%token <strVal> CLASS
 
 
 %type <dataType> DECLARATION
 %type <dataType> EXPRESSION
 %type <dataType> FUNCTION_DECLARATION
-//%start LANGUAGE;
+%start START;
 
 %%
 
-LANGUAGE: DECLARATION | YYEOF;
+START: LANGUAGE | YYEOF;
 
+LANGUAGE: DECLARATION | FUNCTION_CALL | 
+          LANGUAGE DECLARATION | LANGUAGE FUNCTION_CALL;
 
 
 FUNCTION_DECLARATION: EXPRESSION {if(!strcmp("main", yylval.strVal)){mainFound = 1;}} /*Signal that main exists*/
                       LBRACE RBRACE | 
                       FUNCTION_DECLARATION LCURLY RCURLY | 
-                      FUNCTION_DECLARATION LCURLY DECLARATION RCURLY;
+                      FUNCTION_DECLARATION LCURLY LANGUAGE RCURLY;
 
-DECLARATION:  EXPRESSION  SEMICOLON | FUNCTION_DECLARATION | 
-              DECLARATION EXPRESSION SEMICOLON | DECLARATION FUNCTION_DECLARATION;
+FUNCTION_CALL: IDENTIFIER LBRACE RBRACE SEMICOLON | IDENTIFIER LBRACE LIST RBRACE SEMICOLON;
+
+
+DECLARATION:  EXPRESSION  SEMICOLON | FUNCTION_DECLARATION;
 
 EXPRESSION: DATA_TYPE IDENTIFIER | 
-            DATA_TYPE IDENTIFIER EQUALS INTEGER_VALUE {if(!strcmp($1, "int")){varData.integerValue = $4;} varArray_append(&variableArray, varData, $2); printf("%d\n", variableArray.array[lookup(startNode, "dadgad")].integerValue);} |
-            DATA_TYPE IDENTIFIER EQUALS STRING_VALUE {if(!strcmp($1, "string")){varData.stringValue = (char*)malloc(strlen($4)*sizeof(char)); strcpy(varData.stringValue, $4);} varArray_append(&variableArray, varData, $2);} |
-            DATA_TYPE IDENTIFIER EQUALS FLOAT_VALUE {if(!strcmp($1, "float")){varData.floatValue = $4;} varArray_append(&variableArray, varData, $2);} |                                               
+            DATA_TYPE IDENTIFIER EQUALS INTEGER_VALUE {if(!strcmp($1, "int")){varData.integerValue = $4; strcpy(varData.type, $1);} 
+                                                                              varArray_append(&variableArray, varData, $2);} |
+
+            DATA_TYPE IDENTIFIER EQUALS STRING_VALUE {if(!strcmp($1, "string")){varData.stringValue = (char*)malloc(strlen($4)*sizeof(char)); strcpy(varData.stringValue, $4); strcpy(varData.type, $1);} 
+                                                                                varArray_append(&variableArray, varData, $2);} |
+
+            DATA_TYPE IDENTIFIER EQUALS FLOAT_VALUE {if(!strcmp($1, "float")){varData.floatValue = $4; strcpy(varData.type, $1);} 
+                                                                              varArray_append(&variableArray, varData, $2);} | 
+
             DATA_TYPE ARRAY_IDENTIFIER | 
             DATA_TYPE ARRAY_IDENTIFIER EQUALS LCURLY LIST RCURLY;
 
-ARRAY_IDENTIFIER: IDENTIFIER LBRAC RBRAC |
+ARRAY_IDENTIFIER: /*empty*/ | IDENTIFIER LBRAC RBRAC |
                   IDENTIFIER LBRAC INTEGER_VALUE RBRAC |
                   IDENTIFIER LBRAC STRING_VALUE RBRAC |
                   IDENTIFIER LBRAC FLOAT_VALUE RBRAC |
@@ -227,6 +238,7 @@ LIST: IDENTIFIER | LIST COMMA IDENTIFIER;
 LIST: INTEGER_VALUE | LIST COMMA INTEGER_VALUE;
 LIST: STRING_VALUE | LIST COMMA STRING_VALUE;
 LIST: FLOAT_VALUE | LIST COMMA FLOAT_VALUE;
+
 
 %%
 

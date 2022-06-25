@@ -189,7 +189,6 @@ void varArray_append(varArray *arr, Data data, char *name){
         arr->array = (Data*)realloc(arr->array, arr->size * sizeof(Data));
     }
     arr->array[arr->used].integerValue = data.integerValue;
-    printf("%d\n", data.integerValue);
     arr->array[arr->used].floatValue = data.floatValue;
     if(data.stringValue != NULL){
       arr->array[arr->used].stringValue = (char*)malloc(strlen(data.stringValue)*sizeof(char));
@@ -232,7 +231,7 @@ int mainFound = 0;
 
 
 
-#line 236 "glc.tab.c"
+#line 235 "glc.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -659,10 +658,10 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   202,   202,   202,   206,   206,   208,   209,   211,   211,
-     212,   212,   214,   215,   216,   217,   218,   219,   221,   222,
-     223,   224,   225,   227,   227,   228,   228,   229,   229,   230,
-     230
+       0,   201,   201,   201,   205,   205,   207,   208,   210,   210,
+     211,   211,   213,   214,   215,   216,   217,   218,   220,   221,
+     222,   223,   224,   226,   226,   227,   227,   228,   228,   229,
+     229
 };
 #endif
 
@@ -1780,31 +1779,31 @@ yyreduce:
     switch (yyn)
       {
   case 4: /* $@1: %empty  */
-#line 206 "glc.y"
+#line 205 "glc.y"
                                  {if(!strcmp("main", yylval.strVal)){mainFound = 1;}}
-#line 1786 "glc.tab.c"
+#line 1785 "glc.tab.c"
     break;
 
   case 13: /* EXPRESSION: DATA_TYPE IDENTIFIER EQUALS INTEGER_VALUE  */
-#line 215 "glc.y"
+#line 214 "glc.y"
                                                       {if(!strcmp((yyvsp[-3].dataType), "int")){varData.integerValue = (yyvsp[0].intVal);} varArray_append(&variableArray, varData, (yyvsp[-2].strVal)); printf("%d\n", variableArray.array[lookup(startNode, "dadgad")].integerValue);}
-#line 1792 "glc.tab.c"
+#line 1791 "glc.tab.c"
     break;
 
   case 14: /* EXPRESSION: DATA_TYPE IDENTIFIER EQUALS STRING_VALUE  */
-#line 216 "glc.y"
+#line 215 "glc.y"
                                                      {if(!strcmp((yyvsp[-3].dataType), "string")){varData.stringValue = (char*)malloc(strlen((yyvsp[0].strVal))*sizeof(char)); strcpy(varData.stringValue, (yyvsp[0].strVal));} varArray_append(&variableArray, varData, (yyvsp[-2].strVal));}
-#line 1798 "glc.tab.c"
+#line 1797 "glc.tab.c"
     break;
 
   case 15: /* EXPRESSION: DATA_TYPE IDENTIFIER EQUALS FLOAT_VALUE  */
-#line 217 "glc.y"
+#line 216 "glc.y"
                                                     {if(!strcmp((yyvsp[-3].dataType), "float")){varData.floatValue = (yyvsp[0].floatVal);} varArray_append(&variableArray, varData, (yyvsp[-2].strVal));}
-#line 1804 "glc.tab.c"
+#line 1803 "glc.tab.c"
     break;
 
 
-#line 1808 "glc.tab.c"
+#line 1807 "glc.tab.c"
 
         default: break;
       }
@@ -2039,7 +2038,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 232 "glc.y"
+#line 231 "glc.y"
 
 
 

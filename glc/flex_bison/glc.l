@@ -34,10 +34,15 @@ linefeed        \n
 "]"                                             {return RBRAC;}
 "("                                             {return LBRACE;}
 ")"                                             {return RBRACE;}
-"="                                             {return EQUALS;}
+"="                                             {yylval.operator = strdup(yytext); return EQUALS;}
 "<"                                             {return LANGLE;}
 ">"                                             {return RANGLE;}
 
+"+" |
+"-" |
+"*" |
+"/" |
+"%"                                             {yylval.operator = strdup(yytext); return OPERATOR;}
 
 
 

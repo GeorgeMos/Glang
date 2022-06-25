@@ -3,4 +3,5 @@ func1();
 int main(){
     int dadgad = 10;
     func();
+    int a = b + c - d * e;
 }

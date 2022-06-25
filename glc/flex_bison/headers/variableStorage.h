@@ -5,6 +5,13 @@
 #include <string.h>
 #endif
 
+//Data Flow
+typedef struct operation_node{
+  char *operator; //If operator is '=' Then only the right operand is used. The left operand is the Data that holds the pointer to this object
+  struct operation_node *leftOperand; //the operation happens between the 2 operands.
+  struct operation_node *rightOperand; 
+}operationNode;
+
 struct char_node{
   char val;
   int index;
@@ -19,6 +26,7 @@ typedef struct{
     char *stringValue;
     float floatValue;
     char type[10];
+    operationNode *operation; //Operation result = value (integer, float or string)
 }Data;
 
 
@@ -28,6 +36,7 @@ typedef struct{
     size_t used;
     size_t size;
 }varArray;
+
 
 
 /*Extern Variables*/

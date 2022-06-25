@@ -85,7 +85,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 166 "glc.y"
+#line 47 "glc.y"
 
   int intVal;
   char* dataType;

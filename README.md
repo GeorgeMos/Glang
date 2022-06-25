@@ -1,2 +1,2 @@
-# G
-The G Programming Language
+# Glang
+The Glang Programming Language

@@ -67,15 +67,16 @@ extern int yydebug;
     LBRACE = 268,                  /* LBRACE  */
     RANGLE = 269,                  /* RANGLE  */
     LANGLE = 270,                  /* LANGLE  */
-    CHARACTER_VALUE = 271,         /* CHARACTER_VALUE  */
-    INTEGER_VALUE = 272,           /* INTEGER_VALUE  */
-    FLOAT_VALUE = 273,             /* FLOAT_VALUE  */
-    STRING_VALUE = 274,            /* STRING_VALUE  */
-    INT = 275,                     /* INT  */
-    FLOAT = 276,                   /* FLOAT  */
-    STRING = 277,                  /* STRING  */
-    DATA_TYPE = 278,               /* DATA_TYPE  */
-    IDENTIFIER = 279               /* IDENTIFIER  */
+    CLASS = 271,                   /* CLASS  */
+    CHARACTER_VALUE = 272,         /* CHARACTER_VALUE  */
+    INTEGER_VALUE = 273,           /* INTEGER_VALUE  */
+    FLOAT_VALUE = 274,             /* FLOAT_VALUE  */
+    STRING_VALUE = 275,            /* STRING_VALUE  */
+    INT = 276,                     /* INT  */
+    FLOAT = 277,                   /* FLOAT  */
+    STRING = 278,                  /* STRING  */
+    DATA_TYPE = 279,               /* DATA_TYPE  */
+    IDENTIFIER = 280               /* IDENTIFIER  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -84,13 +85,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 26 "glc.y"
+#line 166 "glc.y"
 
   int intVal;
   char* dataType;
   char* strVal;
   float floatVal;
-  char charVal;
 
 #line 96 "glc.tab.h"
 

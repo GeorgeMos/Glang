@@ -15,15 +15,14 @@ whitespace      [ \t\r\v\f]
 linefeed        \n
 
 %%
-"void"  |
-"int"   |
-"char"  |
-"float" | 
-"int*"      |
-"char*"     |
-"float*"    |   
-"unsigned int"  |
-"unsigned char"                                 {yylval.dataType = strdup(yytext); return DATA_TYPE;}
+"void"    |
+"int"     |
+"char"    |
+"float"   | 
+"string"                                        {yylval.dataType = strdup(yytext); return DATA_TYPE;}
+
+
+"class" {return CLASS;}
 
 "'"                                             {return SINGLE_QUOTE;}
 "\""                                            {return DOUBLE_QUOTE;}
@@ -43,7 +42,6 @@ linefeed        \n
 
 
 
-[\'][a-zA-Z][\']                                {yylval.charVal = yytext[1]; return CHARACTER_VALUE;}
 [-+]?[0-9]+                                     {yylval.intVal = atoi(yytext); return INTEGER_VALUE;}
 [-+]?[0-9]*\.?[0-9]+                            {yylval.floatVal = atof(yytext); return FLOAT_VALUE;}
 [a-zA-Z][_a-zA-Z0-9]*                           {yylval.strVal = strdup(yytext); return IDENTIFIER;}

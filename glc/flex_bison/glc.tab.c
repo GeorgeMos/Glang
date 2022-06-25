@@ -75,7 +75,145 @@
 #include "headers/errors.h"
 
 
+
 extern char Data_Type[50];
+
+
+typedef struct{
+    int integerValue;
+    char *stringValue;
+    float floatValue;
+}Data;
+
+
+typedef struct{
+    Data *array;
+    char *type;
+    size_t used;
+    size_t size;
+}varArray;
+
+/*Implementation of a string tree.*/
+struct char_node{
+  char val;
+  int index;
+  int isStart;
+  struct char_node **childArray;
+
+};
+typedef struct char_node charNode;
+
+charNode *startNode;
+
+/*
+void addNode(charNode *currentNode, char val, int isLeaf){
+
+}
+*/
+
+Data varData;
+varArray variableArray;
+
+//Tree start node
+
+void addTreePath(charNode *startNode, char *name, int index){
+  charNode *currentNode = startNode;
+  charNode *nextNode;
+  for(int i = 0; i < strlen(name); i++){
+      for(int j = 0; j < sizeof(currentNode->childArray)/sizeof(charNode*); j++){
+        if(currentNode->childArray[j] != 0){ //If the pointer s not null
+          if(currentNode->childArray[j]->val == name[i]){ //Follow the name characters down the tree
+            nextNode = currentNode->childArray[j];
+            currentNode = nextNode;
+          }
+        }
+      for(int k = 0; k < sizeof(currentNode->childArray)/sizeof(charNode*); k++){//Add a node to the next available entry
+        if(currentNode->childArray[k] == 0){ //Find the next NULL pointer
+          //Initialise new Node
+          currentNode->childArray = (charNode**)realloc(currentNode->childArray, (k+1)*sizeof(charNode*)); //Grow the child array by 1
+          currentNode->childArray[k] = (charNode*)malloc(sizeof(charNode)); //Initialize child node
+          currentNode = currentNode->childArray[k];
+          currentNode->val = name[i];
+          currentNode->isStart = 0;
+          currentNode->index = index;
+          currentNode->childArray = (charNode**)malloc(sizeof(charNode*)); //Initialise the child's childArray
+          break;
+        }
+      }
+    }
+  }
+}
+
+//TODO: Add a findPath function to find the index of a variable in the varArray
+
+int lookup(charNode *startNode, char *name){ //Returns the index of a variable in the variableArray
+  charNode *currentNode = startNode;
+  charNode *nextNode;
+  int found = 0;
+
+  for(int i = 0; i < strlen(name); i++){
+    for(int j = 0; j < sizeof(currentNode->childArray)/sizeof(charNode*); j++){
+      found = 0;
+      if(currentNode->childArray[j] != 0){ //If the pointer s not null
+          if(currentNode->childArray[j]->val == name[i]){ //Follow the name characters down the tree
+            nextNode = currentNode->childArray[j];
+            currentNode = nextNode;
+            found = 1;
+          }
+        }
+    }
+  }
+  if(found){
+    return currentNode->index;
+  }
+  else{
+    return 0;
+  }
+}
+
+int varArray_init(){
+    //variableArray = (varArray*)malloc(sizeof(varArray));
+    variableArray.array = (Data*)malloc(sizeof(Data));
+    variableArray.used = 1;
+    variableArray.size = 1;
+
+    startNode = (charNode*)malloc(sizeof(charNode));
+    startNode->isStart = 1;
+    startNode->index = 0;
+    startNode->childArray = (charNode**)malloc(sizeof(charNode*));
+}
+
+void varArray_append(varArray *arr, Data data, char *name){
+    if(arr->used == arr->size){
+        arr->size++;
+        arr->array = (Data*)realloc(arr->array, arr->size * sizeof(Data));
+    }
+    arr->array[arr->used].integerValue = data.integerValue;
+    printf("%d\n", data.integerValue);
+    arr->array[arr->used].floatValue = data.floatValue;
+    if(data.stringValue != NULL){
+      arr->array[arr->used].stringValue = (char*)malloc(strlen(data.stringValue)*sizeof(char));
+      strcpy(arr->array[arr->used++].stringValue, data.stringValue);
+    }
+
+    addTreePath(startNode, name, arr->used);
+    arr->used++;
+    
+
+
+}
+    
+
+    
+
+
+void varArray_destroy(varArray *arr){
+    free(arr->array);
+    arr->array = NULL;
+    arr->used = 0;
+    arr->size = 0;
+}
+
 
 //Errors
 extern void mainNotFound();
@@ -92,7 +230,9 @@ extern FILE* yyin;
 int mainFound = 0;
 
 
-#line 96 "glc.tab.c"
+
+
+#line 236 "glc.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -136,22 +276,22 @@ enum yysymbol_kind_t
   YYSYMBOL_LBRACE = 13,                    /* LBRACE  */
   YYSYMBOL_RANGLE = 14,                    /* RANGLE  */
   YYSYMBOL_LANGLE = 15,                    /* LANGLE  */
-  YYSYMBOL_CHARACTER_VALUE = 16,           /* CHARACTER_VALUE  */
-  YYSYMBOL_INTEGER_VALUE = 17,             /* INTEGER_VALUE  */
-  YYSYMBOL_FLOAT_VALUE = 18,               /* FLOAT_VALUE  */
-  YYSYMBOL_STRING_VALUE = 19,              /* STRING_VALUE  */
-  YYSYMBOL_INT = 20,                       /* INT  */
-  YYSYMBOL_FLOAT = 21,                     /* FLOAT  */
-  YYSYMBOL_STRING = 22,                    /* STRING  */
-  YYSYMBOL_DATA_TYPE = 23,                 /* DATA_TYPE  */
-  YYSYMBOL_IDENTIFIER = 24,                /* IDENTIFIER  */
-  YYSYMBOL_YYACCEPT = 25,                  /* $accept  */
-  YYSYMBOL_LANGUAGE = 26,                  /* LANGUAGE  */
-  YYSYMBOL_FUNCTION_DECLARATION = 27,      /* FUNCTION_DECLARATION  */
-  YYSYMBOL_28_1 = 28,                      /* $@1  */
-  YYSYMBOL_DECLARATION = 29,               /* DECLARATION  */
-  YYSYMBOL_EXPRESSION = 30,                /* EXPRESSION  */
-  YYSYMBOL_NUMBER = 31,                    /* NUMBER  */
+  YYSYMBOL_CLASS = 16,                     /* CLASS  */
+  YYSYMBOL_CHARACTER_VALUE = 17,           /* CHARACTER_VALUE  */
+  YYSYMBOL_INTEGER_VALUE = 18,             /* INTEGER_VALUE  */
+  YYSYMBOL_FLOAT_VALUE = 19,               /* FLOAT_VALUE  */
+  YYSYMBOL_STRING_VALUE = 20,              /* STRING_VALUE  */
+  YYSYMBOL_INT = 21,                       /* INT  */
+  YYSYMBOL_FLOAT = 22,                     /* FLOAT  */
+  YYSYMBOL_STRING = 23,                    /* STRING  */
+  YYSYMBOL_DATA_TYPE = 24,                 /* DATA_TYPE  */
+  YYSYMBOL_IDENTIFIER = 25,                /* IDENTIFIER  */
+  YYSYMBOL_YYACCEPT = 26,                  /* $accept  */
+  YYSYMBOL_LANGUAGE = 27,                  /* LANGUAGE  */
+  YYSYMBOL_FUNCTION_DECLARATION = 28,      /* FUNCTION_DECLARATION  */
+  YYSYMBOL_29_1 = 29,                      /* $@1  */
+  YYSYMBOL_DECLARATION = 30,               /* DECLARATION  */
+  YYSYMBOL_EXPRESSION = 31,                /* EXPRESSION  */
   YYSYMBOL_ARRAY_IDENTIFIER = 32,          /* ARRAY_IDENTIFIER  */
   YYSYMBOL_LIST = 33                       /* LIST  */
 };
@@ -458,19 +598,19 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  9
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   51
+#define YYLAST   45
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  25
+#define YYNTOKENS  26
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  9
+#define YYNNTS  8
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  25
+#define YYNRULES  30
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  44
+#define YYNSTATES  48
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   279
+#define YYMAXUTOK   280
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -511,16 +651,18 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    62,    62,    62,    66,    66,    69,    69,    70,    70,
-      72,    73,    74,    75,    76,    78,    79,    80,    81,    83,
-      84,    85,    87,    87,    88,    88
+       0,   202,   202,   202,   206,   206,   208,   209,   211,   211,
+     212,   212,   214,   215,   216,   217,   218,   219,   221,   222,
+     223,   224,   225,   227,   227,   228,   228,   229,   229,   230,
+     230
 };
 #endif
 
@@ -539,10 +681,10 @@ static const char *const yytname[] =
   "\"end of file\"", "error", "\"invalid token\"", "COMMA",
   "SINGLE_QUOTE", "SEMICOLON", "EQUALS", "DOUBLE_QUOTE", "RCURLY",
   "LCURLY", "RBRAC", "LBRAC", "RBRACE", "LBRACE", "RANGLE", "LANGLE",
-  "CHARACTER_VALUE", "INTEGER_VALUE", "FLOAT_VALUE", "STRING_VALUE", "INT",
-  "FLOAT", "STRING", "DATA_TYPE", "IDENTIFIER", "$accept", "LANGUAGE",
-  "FUNCTION_DECLARATION", "$@1", "DECLARATION", "EXPRESSION", "NUMBER",
-  "ARRAY_IDENTIFIER", "LIST", YY_NULLPTR
+  "CLASS", "CHARACTER_VALUE", "INTEGER_VALUE", "FLOAT_VALUE",
+  "STRING_VALUE", "INT", "FLOAT", "STRING", "DATA_TYPE", "IDENTIFIER",
+  "$accept", "LANGUAGE", "FUNCTION_DECLARATION", "$@1", "DECLARATION",
+  "EXPRESSION", "ARRAY_IDENTIFIER", "LIST", YY_NULLPTR
 };
 
 static const char *
@@ -552,12 +694,12 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-22)
+#define YYPACT_NINF (-23)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-11)
+#define YYTABLE_NINF (-1)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -566,11 +708,11 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       1,   -22,   -21,    34,     8,    -9,    30,    22,    31,   -22,
-     -22,    33,    35,   -22,    12,    13,    -8,    26,    32,   -22,
-     -22,   -22,   -22,   -22,   -22,   -22,   -22,   -22,    36,    37,
-      38,   -12,   -22,   -22,    39,   -22,   -22,    14,    41,     2,
-     -22,   -22,   -22,   -22
+       0,   -23,   -22,     4,    -3,   -12,    14,    17,    24,   -23,
+      -7,    -3,    28,   -23,    22,    18,    -5,    30,   -23,    -6,
+     -23,    19,   -23,   -23,   -23,   -23,    31,    32,    33,    34,
+      -9,   -23,   -23,   -23,   -23,   -23,   -23,   -23,   -23,   -23,
+     -23,    26,     7,   -23,   -23,   -23,   -23,   -23
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -578,23 +720,23 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     3,     0,     0,     0,     2,     0,     4,    13,     1,
-       7,     0,     0,     6,     0,     0,     0,     0,     0,     9,
-       8,    12,    18,    15,    16,    17,    11,    19,     0,     0,
-       0,     0,    21,    20,     0,    22,    24,     0,     0,     0,
-      14,     5,    23,    25
+       0,     3,     0,     0,     9,     2,     4,    12,    16,     1,
+       0,    11,     4,     8,     0,     0,     0,     0,     6,     0,
+      10,     0,    13,    15,    14,    18,     0,     0,     0,     0,
+       0,     7,     5,    19,    21,    20,    22,    25,    29,    27,
+      23,     0,     0,    17,    26,    30,    28,    24
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -22,   -22,    40,   -22,   -22,    46,   -16,   -22,   -22
+     -23,   -23,     2,   -23,    35,     3,   -23,   -23
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     3,     4,    17,     5,     6,    26,     8,    37
+       0,     3,     4,    14,     5,     6,     8,    41
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -602,49 +744,49 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      29,     1,    27,     7,    22,    23,    24,    25,    22,    23,
-      24,    25,    35,    10,     2,    36,    28,    39,    22,    23,
-      24,    25,    40,    43,     2,    14,    42,   -10,    15,    22,
-      23,    24,    25,    16,     9,    13,    21,    18,    19,    30,
-      20,    31,     0,     0,     0,    11,    32,    33,    38,    41,
-      34,    12
+       1,    18,    31,     7,     9,    25,    10,    11,    12,    37,
+      38,    39,     2,    26,    27,    28,    40,     2,     2,    13,
+      29,    11,    12,    15,     2,    44,    45,    46,    16,    42,
+      17,    32,    47,    20,    43,    21,    22,    23,    24,    30,
+       0,    33,    34,    35,    36,    19
 };
 
 static const yytype_int8 yycheck[] =
 {
-      16,     0,    10,    24,    16,    17,    18,    19,    16,    17,
-      18,    19,    24,     5,    23,    31,    24,     3,    16,    17,
-      18,    19,     8,    39,    23,     3,    24,     5,     6,    16,
-      17,    18,    19,    11,     0,     5,    24,     6,     5,    13,
-       5,     9,    -1,    -1,    -1,     5,    10,    10,     9,     8,
-      12,     5
+       0,     8,     8,    25,     0,    10,     9,     5,     5,    18,
+      19,    20,    24,    18,    19,    20,    25,    24,    24,     5,
+      25,    19,    19,     6,    24,    18,    19,    20,    11,     3,
+       6,    12,    25,     5,     8,    13,    18,    19,    20,     9,
+      -1,    10,    10,    10,    10,    10
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     0,    23,    26,    27,    29,    30,    24,    32,     0,
-       5,    27,    30,     5,     3,     6,    11,    28,     6,     5,
-       5,    24,    16,    17,    18,    19,    31,    10,    24,    31,
-      13,     9,    10,    10,    12,    24,    31,    33,     9,     3,
-       8,     8,    24,    31
+       0,     0,    24,    27,    28,    30,    31,    25,    32,     0,
+       9,    28,    31,     5,    29,     6,    11,     6,     8,    30,
+       5,    13,    18,    19,    20,    10,    18,    19,    20,    25,
+       9,     8,    12,    10,    10,    10,    10,    18,    19,    20,
+      25,    33,     3,     8,    18,    19,    20,    25
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    25,    26,    26,    28,    27,    29,    29,    29,    29,
-      30,    30,    30,    30,    30,    31,    31,    31,    31,    32,
-      32,    32,    33,    33,    33,    33
+       0,    26,    27,    27,    29,    28,    28,    28,    30,    30,
+      30,    30,    31,    31,    31,    31,    31,    31,    32,    32,
+      32,    32,    32,    33,    33,    33,    33,    33,    33,    33,
+      33
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     1,     1,     0,     7,     2,     2,     3,     3,
-       2,     4,     4,     2,     6,     1,     1,     1,     1,     3,
-       4,     4,     1,     3,     1,     3
+       0,     2,     1,     1,     0,     4,     3,     4,     2,     1,
+       3,     2,     2,     4,     4,     4,     2,     6,     3,     4,
+       4,     4,     4,     1,     3,     1,     3,     1,     3,     1,
+       3
 };
 
 
@@ -1638,13 +1780,31 @@ yyreduce:
     switch (yyn)
       {
   case 4: /* $@1: %empty  */
-#line 66 "glc.y"
-                                           {if(!strcmp("main", yylval.strVal)){mainFound = 1;}}
-#line 1644 "glc.tab.c"
+#line 206 "glc.y"
+                                 {if(!strcmp("main", yylval.strVal)){mainFound = 1;}}
+#line 1786 "glc.tab.c"
+    break;
+
+  case 13: /* EXPRESSION: DATA_TYPE IDENTIFIER EQUALS INTEGER_VALUE  */
+#line 215 "glc.y"
+                                                      {if(!strcmp((yyvsp[-3].dataType), "int")){varData.integerValue = (yyvsp[0].intVal);} varArray_append(&variableArray, varData, (yyvsp[-2].strVal)); printf("%d\n", variableArray.array[lookup(startNode, "dadgad")].integerValue);}
+#line 1792 "glc.tab.c"
+    break;
+
+  case 14: /* EXPRESSION: DATA_TYPE IDENTIFIER EQUALS STRING_VALUE  */
+#line 216 "glc.y"
+                                                     {if(!strcmp((yyvsp[-3].dataType), "string")){varData.stringValue = (char*)malloc(strlen((yyvsp[0].strVal))*sizeof(char)); strcpy(varData.stringValue, (yyvsp[0].strVal));} varArray_append(&variableArray, varData, (yyvsp[-2].strVal));}
+#line 1798 "glc.tab.c"
+    break;
+
+  case 15: /* EXPRESSION: DATA_TYPE IDENTIFIER EQUALS FLOAT_VALUE  */
+#line 217 "glc.y"
+                                                    {if(!strcmp((yyvsp[-3].dataType), "float")){varData.floatValue = (yyvsp[0].floatVal);} varArray_append(&variableArray, varData, (yyvsp[-2].strVal));}
+#line 1804 "glc.tab.c"
     break;
 
 
-#line 1648 "glc.tab.c"
+#line 1808 "glc.tab.c"
 
         default: break;
       }
@@ -1879,12 +2039,13 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 90 "glc.y"
+#line 232 "glc.y"
 
 
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
+  varArray_init();
+  
   if(argc == 2)
   {
     if(!(yyin = fopen(argv[1],"r")))
@@ -1908,7 +2069,9 @@ int main(int argc, char *argv[])
       }
       
   }
-  else return rez;
+  else{
+    return rez;
+  }
 }
 
 

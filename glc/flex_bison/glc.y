@@ -30,6 +30,8 @@ charNode *startNode;
 Data varData;
 varArray variableArray;
 
+opArray opNodeArray;
+
 
 
 //Errors
@@ -61,7 +63,7 @@ int mainFound = 0;
 %define parse.lac full
 %define parse.error verbose
 
-%token  COMMA   SINGLE_QUOTE   SEMICOLON  DOUBLE_QUOTE 
+%token  COMMA   SINGLE_QUOTE   SEMICOLON  DOUBLE_QUOTE EQUALS
 %token  RCURLY LCURLY RBRAC LBRAC RBRACE LBRACE RANGLE LANGLE
 
 %token CLASS
@@ -78,14 +80,13 @@ int mainFound = 0;
 %token <dataType> DATA_TYPE
 %token <strVal> IDENTIFIER
 %token <operator> OPERATOR
-%token <operator> EQUALS
 //%token <strVal> CLASS
 
 
 %type <dataType> DECLARATION
 %type <dataType> EXPRESSION
 %type <dataType> FUNCTION_DECLARATION
-%type <strVal> OPERATION
+//%type <strVal> OPERATION
 %start START;
 
 %%
@@ -103,14 +104,6 @@ FUNCTION_DECLARATION: EXPRESSION {if(!strcmp("main", yylval.strVal)){mainFound =
 
 FUNCTION_CALL: IDENTIFIER LBRACE RBRACE SEMICOLON | IDENTIFIER LBRACE LIST RBRACE SEMICOLON;
 
-//TODO : Make function to construct the operation tree
-OPERATION: IDENTIFIER {printf("%s", $1);}  | OPERATION EQUALS IDENTIFIER   {printf("%s%s%s\n", $$, $2, $3);}| 
-                        OPERATION OPERATOR IDENTIFIER {printf("%s%s", $2, $3);}|
-
-           INTEGER_VALUE | OPERATION OPERATOR INTEGER_VALUE | 
-           STRING_VALUE | OPERATION OPERATOR STRING_VALUE   |
-           FLOAT_VALUE | OPERATION OPERATOR FLOAT_VALUE;
-
 
 DECLARATION:  EXPRESSION  SEMICOLON | FUNCTION_DECLARATION;
 
@@ -124,10 +117,23 @@ EXPRESSION: DATA_TYPE IDENTIFIER |
             DATA_TYPE IDENTIFIER EQUALS FLOAT_VALUE {if(!strcmp($1, "float")){varData.floatValue = $4; strcpy(varData.type, $1);} 
                                                                               varArray_append(&variableArray, varData, $2);} | 
             
-            DATA_TYPE IDENTIFIER EQUALS OPERATION|
+            DATA_TYPE IDENTIFIER EQUALS OPERATION |
 
             DATA_TYPE ARRAY_IDENTIFIER | 
             DATA_TYPE ARRAY_IDENTIFIER EQUALS LCURLY LIST RCURLY;
+
+
+//TODO : Make function to construct the operation tree
+
+OPERATION: IDENTIFIER | OPERATION OPERATOR IDENTIFIER| 
+  
+           INTEGER_VALUE | OPERATION OPERATOR INTEGER_VALUE | 
+
+           STRING_VALUE | OPERATION OPERATOR STRING_VALUE  |
+
+           FLOAT_VALUE | OPERATION OPERATOR FLOAT_VALUE;
+           
+
 
 ARRAY_IDENTIFIER: /*empty*/ | IDENTIFIER LBRAC RBRAC |
                   IDENTIFIER LBRAC INTEGER_VALUE RBRAC |
@@ -165,6 +171,7 @@ int main(int argc, char *argv[]){
       }
       else{
           printf("\nAll Good\n");
+          printf("%d\n", lookup(startNode, "dadgad"));
           return yyparse();
           //exit(0);
       }

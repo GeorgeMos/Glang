@@ -34,7 +34,7 @@ linefeed        \n
 "]"                                             {return RBRAC;}
 "("                                             {return LBRACE;}
 ")"                                             {return RBRACE;}
-"="                                             {yylval.operator = strdup(yytext); return EQUALS;}
+"="                                             {return EQUALS;}
 "<"                                             {return LANGLE;}
 ">"                                             {return RANGLE;}
 

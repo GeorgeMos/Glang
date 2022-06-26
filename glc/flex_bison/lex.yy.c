@@ -846,7 +846,7 @@ YY_RULE_SETUP
 case 17:
 YY_RULE_SETUP
 #line 37 "glc.l"
-{yylval.operator = strdup(yytext); return EQUALS;}
+{return EQUALS;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP

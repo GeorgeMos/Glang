@@ -56,12 +56,87 @@ extern Data varData;
 extern varArray variableArray;
 
 extern opArray opNodeArray;
-//TODO: Implement Operation Scopes for conflict avoidance
+
+
+//These are temporary stacks used for structuring the priority of operations.
+//When all of the operations have been transfeded(copyed) to the main array(opNodeArray) the stacks are cleared for the next operation 
+opArray opNodeStack;
+opArray tempOpNodeStack;
+
+
 void opNodeArray_init(){
   opNodeArray.array = (operationNode*)malloc(sizeof(operationNode));
   opNodeArray.size = 1;
   opNodeArray.used = 1;
 }
+
+
+//-------------Operation Node Stack Functions-------------//
+void opNodeStack_init(){
+  //Init stack
+  opNodeStack.array = (operationNode*)malloc(sizeof(operationNode));
+  opNodeStack.size = 1;
+  opNodeStack.used = 1;
+
+  //Temp stack init
+  tempOpNodeStack.array = (operationNode*)malloc(sizeof(operationNode));
+  tempOpNodeStack.size = 1;
+  tempOpNodeStack.used = 1;
+}
+
+void opNodeStack_destroy(){
+  free(opNodeStack.array);
+  opNodeStack.size = 0;
+  opNodeStack.used = 0;
+}
+
+void tempOpNodeStack_push(){
+
+}
+
+void tempOpNodeStack_transfer(){
+
+}
+
+
+operationNode opNode_create(char *resultVar, char *leftVar, char *rightVar, char *operator, int isFinal, int priority){
+  operationNode opNode;
+
+  opNode.operator = (char*)malloc(sizeof(char)*strlen(operator));
+  strcpy(opNode.operator, operator);
+
+  opNode.isFinal = isFinal;
+  opNode.priority = priority;
+
+  opNode.result = &variableArray.array[lookup(startNode, resultVar)];
+  opNode.leftOp = &variableArray.array[lookup(startNode, leftVar)];
+  opNode.rightOp = &variableArray.array[lookup(startNode, rightVar)];
+
+  return opNode;
+
+}
+
+void opStack_push(operationNode opNode){
+  if(opNodeStack.used == opNodeStack.used){
+    opNodeStack.size++;
+    opNodeStack.array = (operationNode*)realloc(opNodeStack.array, opNodeStack.size*sizeof(operationNode));
+  }
+  opNodeStack.array[opNodeStack.used] = opNode;
+  opNodeStack.used++;
+
+}
+
+operationNode opStack_pop(){
+  operationNode opNode = opNodeStack.array[opNodeStack.used];
+  //Delete last element
+  opNodeStack.used--;
+  opNodeStack.size--;
+  opNodeStack.array = (operationNode*)realloc(opNodeStack.array, opNodeStack.size*sizeof(operationNode));
+  return opNode;
+}
+//--------------------------------------------------------//
+
+
 
 void addOpNode(char *resultVar, char *operator, int isFinal){
   int varIndex = lookup(startNode, resultVar);

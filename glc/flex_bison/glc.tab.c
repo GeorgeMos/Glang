@@ -1976,7 +1976,7 @@ int main(int argc, char *argv[]){
       }
       else{
           printf("\nAll Good\n");
-          printf("%d\n", lookup(startNode, "dadgad"));
+          printf("%d\n", lookup(startNode, "a"));
           return yyparse();
           //exit(0);
       }

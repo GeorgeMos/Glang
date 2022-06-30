@@ -22,6 +22,9 @@ extern char Data_Type[50];
 extern int varArray_init();
 extern void varArray_append(varArray *arr, Data data, char *name);
 extern int lookup(charNode *startNode, char *name);
+extern operationNode opNode_create(Data leftVar, Data rightVar, char *leftVarName, char *rightVarName, char *operator, int isFinal, int priority);
+extern void opStack_push(operationNode opNode);
+extern operationNode opStack_pop();
 
 //Tree start node
 charNode *startNode;
@@ -117,17 +120,15 @@ EXPRESSION: DATA_TYPE IDENTIFIER |
             DATA_TYPE IDENTIFIER EQUALS FLOAT_VALUE {if(!strcmp($1, "float")){varData.floatValue = $4; strcpy(varData.type, $1);} 
                                                                               varArray_append(&variableArray, varData, $2);} | 
             
-            DATA_TYPE IDENTIFIER EQUALS OPERATION |
+            DATA_TYPE IDENTIFIER EQUALS OPERATION {printf("=%s", $2);} |
 
             DATA_TYPE ARRAY_IDENTIFIER | 
             DATA_TYPE ARRAY_IDENTIFIER EQUALS LCURLY LIST RCURLY;
 
 
-//TODO : Make function to construct the operation tree
-
-OPERATION: IDENTIFIER | OPERATION OPERATOR IDENTIFIER| 
+OPERATION: IDENTIFIER /*Left Var*/ {printf("%s", $1);} | OPERATION OPERATOR IDENTIFIER /*Right Var*/ {printf("%s%s", $2, $3);}| 
   
-           INTEGER_VALUE | OPERATION OPERATOR INTEGER_VALUE | 
+           INTEGER_VALUE {printf("%d", $1);} | OPERATION OPERATOR INTEGER_VALUE | 
 
            STRING_VALUE | OPERATION OPERATOR STRING_VALUE  |
 

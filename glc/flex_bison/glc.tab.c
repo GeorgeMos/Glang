@@ -92,6 +92,9 @@ extern char Data_Type[50];
 extern int varArray_init();
 extern void varArray_append(varArray *arr, Data data, char *name);
 extern int lookup(charNode *startNode, char *name);
+extern operationNode opNode_create(Data leftVar, Data rightVar, char *leftVarName, char *rightVarName, char *operator, int isFinal, int priority);
+extern void opStack_push(operationNode opNode);
+extern operationNode opStack_pop();
 
 //Tree start node
 charNode *startNode;
@@ -121,7 +124,7 @@ int mainFound = 0;
 
 
 
-#line 125 "glc.tab.c"
+#line 128 "glc.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -552,11 +555,11 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    94,    94,    94,    96,    96,    97,    97,   100,   100,
-     102,   103,   105,   105,   108,   108,   110,   111,   114,   117,
-     120,   122,   123,   128,   128,   130,   130,   132,   132,   134,
-     134,   138,   138,   139,   140,   141,   142,   144,   144,   145,
-     145,   146,   146,   147,   147
+       0,    97,    97,    97,    99,    99,   100,   100,   103,   103,
+     105,   106,   108,   108,   111,   111,   113,   114,   117,   120,
+     123,   125,   126,   129,   129,   131,   131,   133,   133,   135,
+     135,   139,   139,   140,   141,   142,   143,   145,   145,   146,
+     146,   147,   147,   148,   148
 };
 #endif
 
@@ -1689,34 +1692,58 @@ yyreduce:
     switch (yyn)
       {
   case 8: /* $@1: %empty  */
-#line 100 "glc.y"
+#line 103 "glc.y"
                                  {if(!strcmp("main", yylval.strVal)){mainFound = 1;}}
-#line 1695 "glc.tab.c"
+#line 1698 "glc.tab.c"
     break;
 
   case 17: /* EXPRESSION: DATA_TYPE IDENTIFIER EQUALS INTEGER_VALUE  */
-#line 111 "glc.y"
+#line 114 "glc.y"
                                                       {if(!strcmp((yyvsp[-3].dataType), "int")){varData.integerValue = (yyvsp[0].intVal); strcpy(varData.type, (yyvsp[-3].dataType));} 
                                                                               varArray_append(&variableArray, varData, (yyvsp[-2].strVal));}
-#line 1702 "glc.tab.c"
+#line 1705 "glc.tab.c"
     break;
 
   case 18: /* EXPRESSION: DATA_TYPE IDENTIFIER EQUALS STRING_VALUE  */
-#line 114 "glc.y"
+#line 117 "glc.y"
                                                      {if(!strcmp((yyvsp[-3].dataType), "string")){varData.stringValue = (char*)malloc(strlen((yyvsp[0].strVal))*sizeof(char)); strcpy(varData.stringValue, (yyvsp[0].strVal)); strcpy(varData.type, (yyvsp[-3].dataType));} 
                                                                                 varArray_append(&variableArray, varData, (yyvsp[-2].strVal));}
-#line 1709 "glc.tab.c"
+#line 1712 "glc.tab.c"
     break;
 
   case 19: /* EXPRESSION: DATA_TYPE IDENTIFIER EQUALS FLOAT_VALUE  */
-#line 117 "glc.y"
+#line 120 "glc.y"
                                                     {if(!strcmp((yyvsp[-3].dataType), "float")){varData.floatValue = (yyvsp[0].floatVal); strcpy(varData.type, (yyvsp[-3].dataType));} 
                                                                               varArray_append(&variableArray, varData, (yyvsp[-2].strVal));}
-#line 1716 "glc.tab.c"
+#line 1719 "glc.tab.c"
+    break;
+
+  case 20: /* EXPRESSION: DATA_TYPE IDENTIFIER EQUALS OPERATION  */
+#line 123 "glc.y"
+                                                  {printf("=%s", (yyvsp[-2].strVal));}
+#line 1725 "glc.tab.c"
+    break;
+
+  case 23: /* OPERATION: IDENTIFIER  */
+#line 129 "glc.y"
+                                   {printf("%s", (yyvsp[0].strVal));}
+#line 1731 "glc.tab.c"
+    break;
+
+  case 24: /* OPERATION: OPERATION OPERATOR IDENTIFIER  */
+#line 129 "glc.y"
+                                                                                                     {printf("%s%s", (yyvsp[-1].operator), (yyvsp[0].strVal));}
+#line 1737 "glc.tab.c"
+    break;
+
+  case 25: /* OPERATION: INTEGER_VALUE  */
+#line 131 "glc.y"
+                         {printf("%d", (yyvsp[0].intVal));}
+#line 1743 "glc.tab.c"
     break;
 
 
-#line 1720 "glc.tab.c"
+#line 1747 "glc.tab.c"
 
         default: break;
       }
@@ -1951,7 +1978,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 150 "glc.y"
+#line 151 "glc.y"
 
 
 

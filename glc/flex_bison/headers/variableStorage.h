@@ -26,6 +26,7 @@ typedef struct data_struct{
 
 
 //Data Flow
+//If an operator is a variable then Op is a pointer. If it is a literal it is a value.
 typedef struct operation_node{
   char *operator; //Operator of the operation
   Data *leftOp;   //Points to the left operator Data object (Variable Data or Result of a previous operation)
@@ -68,6 +69,8 @@ void opNodeArray_init(){
   opNodeArray.array = (operationNode*)malloc(sizeof(operationNode));
   opNodeArray.size = 1;
   opNodeArray.used = 1;
+
+  opNodeStack_init();
 }
 
 
@@ -98,8 +101,9 @@ void tempOpNodeStack_transfer(){
 
 }
 
-
-operationNode opNode_create(char *resultVar, char *leftVar, char *rightVar, char *operator, int isFinal, int priority){
+//Problem: In this current implementation the code works only with operations between variables and not literals
+//TODO: Add a literal storage structure
+operationNode opNode_create(Data leftVar, Data rightVar, char *leftVarName, char *rightVarName, char *operator, int isFinal, int priority){
   operationNode opNode;
 
   opNode.operator = (char*)malloc(sizeof(char)*strlen(operator));
@@ -108,13 +112,28 @@ operationNode opNode_create(char *resultVar, char *leftVar, char *rightVar, char
   opNode.isFinal = isFinal;
   opNode.priority = priority;
 
-  opNode.result = &variableArray.array[lookup(startNode, resultVar)];
-  opNode.leftOp = &variableArray.array[lookup(startNode, leftVar)];
-  opNode.rightOp = &variableArray.array[lookup(startNode, rightVar)];
+  //opNode.result = &variableArray.array[lookup(startNode, resultVar)];
+
+  if(!strcmp(leftVarName, "")){
+    opNode.leftOp = (Data*)malloc(sizeof(Data));
+    opNode.leftOp = &leftVar;
+  }
+  else if(strcmp(leftVarName, "")){
+    opNode.leftOp = &variableArray.array[lookup(startNode, leftVarName)];
+  }
+
+  if(!strcmp(rightVarName, "")){
+    opNode.rightOp = (Data*)malloc(sizeof(Data));
+    opNode.rightOp = &rightVar;
+  }
+  else if(strcmp(rightVarName, "")){
+    opNode.rightOp = &variableArray.array[lookup(startNode, rightVarName)];
+  }
 
   return opNode;
 
 }
+
 
 void opStack_push(operationNode opNode){
   if(opNodeStack.used == opNodeStack.used){
